@@ -39,10 +39,10 @@ const pickupSchema = new mongoose.Schema(
         },
 
         deliveryPartner: {
-            type: String,
-            default: ""
-        },
-
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+},
         deliveryFee: {
             type: Number,
             default: 0

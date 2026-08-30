@@ -8,6 +8,8 @@ const authRoutes = require("./routes/authRoutes");
 const testRoutes = require("./routes/testRoutes");
 const donationRoutes = require("./routes/donationRoutes");
 const requestRoutes = require("./routes/requestRoutes");
+const pickupRoutes = require("./routes/pickupRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 
 app.use(cors());
@@ -16,6 +18,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/donations", donationRoutes);
 app.use("/api/requests", requestRoutes);
+app.use("/api/pickups", pickupRoutes);
+app.use("/api/admin", adminRoutes);
 // MongoDB connection
 mongoose
     .connect(process.env.MONGODB_URI)

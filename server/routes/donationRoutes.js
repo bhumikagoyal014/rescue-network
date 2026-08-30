@@ -1,55 +1,20 @@
-    const express = require("express");
+const express = require("express");
+const protect = require("../middleware/authMiddleware");
+const {
+    createDonation,
+    getAvailableDonations,
+    getMyDonations
+} = require("../controllers/donationController");
 
-    const protect = require("../middleware/authMiddleware");
-    const { createDonation } = require("../controllers/donationController");
+const router = express.Router();
 
-    const router = express.Router();
+// Public / Authenticated: View all available donations
+router.get("/available", getAvailableDonations);
 
-    router.post("/", protect, createDonation);
+// DONOR: View my created donations
+router.get("/my-donations", protect, getMyDonations);
 
-    module.exports = router;
-    // Request a donation
-    router.post("/:id/request", protect, async (req, res) => {
-        try {
-            const donation = await Donation.findById(req.params.id);
+// DONOR: Create new donation
+router.post("/", protect, createDonation);
 
-            if (!donation) {
-                return res.status(404).json({
-                    message: "Donation not found"
-                });
-            }
-
-            // Donation must be available
-            if (donation.status !== "AVAILABLE") {
-                return res.status(400).json({
-                    message: "Donation is not available for request"
-                });
-            }
-
-            // Donor cannot request their own donation
-            if (donation.donor.toString() === req.user.id) {
-                return res.status(400).json({
-                    message: "You cannot request your own donation"
-                });
-            }
-
-            // Save receiver
-            donation.receiver = req.user.id;
-
-            // Change status
-            donation.status = "REQUESTED";
-
-            await donation.save();
-
-            res.status(200).json({
-                message: "Donation requested successfully",
-                donation
-            });
-
-        } catch (error) {
-            res.status(500).json({
-                message: "Server error",
-                error: error.message
-            });
-        }
-    });
+module.exports = router;

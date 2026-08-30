@@ -13,7 +13,6 @@ const createDonation = async (req, res) => {
             availableUntil
         } = req.body;
 
-        // Check required fields
         if (
             !title ||
             !description ||
@@ -27,7 +26,6 @@ const createDonation = async (req, res) => {
             });
         }
 
-        // Create donation
         const donation = await Donation.create({
             donor: req.user.userId,
             title,
@@ -43,42 +41,28 @@ const createDonation = async (req, res) => {
             message: "Donation created successfully",
             donation
         });
-
     } catch (error) {
         console.error("Create donation error:", error.message);
-
-        res.status(500).json({
-            message: "Server error"
-        });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
-module.exports = {
-    createDonation
-};
 // Get all available donations
 const getAvailableDonations = async (req, res) => {
     try {
-        const donations = await Donation.find({
-            status: "AVAILABLE"
-        })
-            .populate("donor", "name")
+        const donations = await Donation.find({ status: "AVAILABLE" })
+            .populate("donor", "name email phone")
             .sort({ createdAt: -1 });
 
         res.status(200).json({
             count: donations.length,
             donations
         });
-
     } catch (error) {
         console.error("Get available donations error:", error.message);
-
-        res.status(500).json({
-            message: "Server error"
-        });
+        res.status(500).json({ message: "Server error" });
     }
 };
-
 
 // Get donations created by the logged-in donor
 const getMyDonations = async (req, res) => {
@@ -91,16 +75,11 @@ const getMyDonations = async (req, res) => {
             count: donations.length,
             donations
         });
-
     } catch (error) {
         console.error("Get my donations error:", error.message);
-
-        res.status(500).json({
-            message: "Server error"
-        });
+        res.status(500).json({ message: "Server error" });
     }
 };
-
 
 module.exports = {
     createDonation,
